@@ -1,0 +1,395 @@
+import { useState } from 'react';
+import {
+  Truck, HeadphonesIcon, ShieldCheck, Star, ChevronDown, ChevronUp,
+  ExternalLink, MapPin, ArrowLeft, CheckCircle2, Phone, Clock
+} from 'lucide-react';
+
+const HERO_IMAGE = 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=1200';
+
+const BASE = 'https://www.ebath.co.il';
+
+const CATEGORIES = [
+  {
+    name: 'ארונות אמבטיה',
+    desc: 'עשרות דגמים בכל מידה, חומר וגימור',
+    img: 'https://images.pexels.com/photos/6585598/pexels-photo-6585598.jpeg?auto=compress&cs=tinysrgb&w=600',
+    url: `${BASE}/lobby/ארונות-אמבטיה`,
+  },
+  {
+    name: 'מקלחונים',
+    desc: 'זכוכית מחוסמת, פרופיל אלומיניום',
+    img: 'https://images.pexels.com/photos/6585604/pexels-photo-6585604.jpeg?auto=compress&cs=tinysrgb&w=600',
+    url: `${BASE}/lobby/מקלחונים-איכותיים`,
+  },
+  {
+    name: 'ברזים למטבח ולאמבטיה',
+    desc: 'כרום, זהב, מט — לכל טעם ותקציב',
+    img: 'https://images.pexels.com/photos/6585757/pexels-photo-6585757.jpeg?auto=compress&cs=tinysrgb&w=600',
+    url: `${BASE}/lobby/ברזים-אמבטיה`,
+  },
+  {
+    name: 'ראשי גשם ומזלפים',
+    desc: 'חוויית מקלחת ברמה אחרת',
+    img: 'https://images.pexels.com/photos/3958986/pexels-photo-3958986.jpeg?auto=compress&cs=tinysrgb&w=600',
+    url: `${BASE}/lobby/ראשי-גשם`,
+  },
+  {
+    name: 'אביזרי אמבטיה',
+    desc: 'ידיות, מחזיקים, מגבות, מדפים',
+    img: 'https://images.pexels.com/photos/6316065/pexels-photo-6316065.jpeg?auto=compress&cs=tinysrgb&w=600',
+    url: `${BASE}/lobby/אביזרי-אמבטיה-איכותיים`,
+  },
+  {
+    name: 'מראות',
+    desc: 'מראות רגילות, מגדילות ועם תאורה',
+    img: 'https://images.pexels.com/photos/6585601/pexels-photo-6585601.jpeg?auto=compress&cs=tinysrgb&w=600',
+    url: `${BASE}/lobby/מראות-למקלחת`,
+  },
+];
+
+const ALL_CATEGORIES = [
+  { name: 'ארונות אמבטיה', url: `${BASE}/lobby/ארונות-אמבטיה` },
+  { name: 'מקלחונים', url: `${BASE}/lobby/מקלחונים-איכותיים` },
+  { name: 'ברזים לאמבטיה', url: `${BASE}/lobby/ברזים-אמבטיה` },
+  { name: 'ברזים למטבח', url: `${BASE}/lobby/ברזים-אמבטיה` },
+  { name: 'ראשי גשם', url: `${BASE}/lobby/ראשי-גשם` },
+  { name: 'מזלפים', url: `${BASE}/lobby/מזלפים` },
+  { name: 'מושבי אסלה', url: `${BASE}/lobby/מושבי-אסלה` },
+  { name: 'מושבים למקלחת', url: `${BASE}/lobby/אביזרי-אמבטיה-איכותיים` },
+  { name: 'ידיות אחיזה לאמבט', url: `${BASE}/lobby/אביזרי-אמבטיה-איכותיים` },
+  { name: 'מראות מגדילות', url: `${BASE}/lobby/מראות-למקלחת` },
+  { name: 'מראות לאמבטיה', url: `${BASE}/lobby/מראות-למקלחת` },
+  { name: 'מחממי מגבות', url: `${BASE}/lobby/מחממי-מגבות` },
+  { name: 'פחי אשפה', url: `${BASE}/lobby/פחי-אשפה-1` },
+  { name: 'ידיות לריהוט ומטבחים', url: `${BASE}/lobby/אביזרי-אמבטיה-איכותיים` },
+  { name: 'מוטות פינוק למקלחת', url: `${BASE}/lobby/אביזרי-אמבטיה-איכותיים` },
+  { name: 'אביזרים למטבח', url: `${BASE}/lobby/אביזרי-אמבטיה-איכותיים` },
+  { name: 'אביזרים לאמבטיה', url: `${BASE}/lobby/אביזרי-אמבטיה-איכותיים` },
+  { name: 'פסילות לויאלון', url: `${BASE}/lobby/אביזרי-אמבטיה-איכותיים` },
+  { name: 'אסלות', url: `${BASE}/Cat1View.asp?cat=56` },
+];
+
+const BENEFITS = [
+  { icon: <Truck size={24} />, title: 'משלוח לכל הארץ', desc: 'הזמן אונליין — מגיע עד הדלת' },
+  { icon: <HeadphonesIcon size={24} />, title: 'ייעוץ מקצועי', desc: 'צוות מנוסה לכל שאלה' },
+  { icon: <ShieldCheck size={24} />, title: 'מוצרים מובילי עולם', desc: 'מותגים מוכחים עם אחריות' },
+  { icon: <MapPin size={24} />, title: 'מחסן ומשרד', desc: 'המרכבה 19, א.ת. חולון' },
+];
+
+const REVIEWS = [
+  { name: 'דנה כ.', rating: 5, text: 'שירות מעולה! עזרו לי לבחור ארון אמבטיה מושלם לחדר קטן. הגיע מהר ועם הוראות הרכבה ברורות.' },
+  { name: 'אורי מ.', rating: 5, text: 'הזמנתי ברזים ומראה מגדילה. האיכות פנומנלית. אחרי שנה — הכל עובד מצוין.' },
+  { name: 'רחל ש.', rating: 5, text: 'eBath עזרו לי לתכנן שיפוץ שלם לחדר האמבטיה. מגוון מטורף. ממליצה בחום!' },
+  { name: 'יוסי ב.', rating: 5, text: 'קניתי מקלחון וראש גשם. המחירים הכי טובים שמצאתי, ועם ייעוץ אישי. לא יקנה אחרת.' },
+];
+
+const FAQS = [
+  {
+    q: 'מה מגוון המוצרים ב-eBath?',
+    a: 'eBath מציעה למעלה מ-10,000 מוצרים ב-20+ קטגוריות: ארונות אמבטיה, מקלחונים, ברזים למטבח ולאמבטיה, ראשי גשם, מזלפים, מושבי אסלה, מחממי מגבות, מראות מגדילות, אביזרים ועוד.',
+  },
+  {
+    q: 'האם eBath מספקת משלוח לכל הארץ?',
+    a: 'כן — eBath מספקת משלוח לכל רחבי ישראל. מזמינים באתר ebath.co.il ומקבלים עד הבית.',
+  },
+  {
+    q: 'היכן ממוקם המחסן והחנות?',
+    a: 'המחסן והחנות ממוקמים ברחוב המרכבה 19, א.ת. חולון (מול תחנת דלק). שעות פתיחה: א\'–ה\' 9:00–17:00, ו\' 9:00–13:00.',
+  },
+  {
+    q: 'האם eBath מציעה ייעוץ מקצועי?',
+    a: 'כן, eBath מציעה ייעוץ מקצועי — בחנות הפיזית בחולון או דרך האתר. הצוות יעזור לבחור מוצרים שמתאימים לחדר, לתקציב ולסגנון.',
+  },
+  {
+    q: 'כיצד ליצור קשר עם eBath?',
+    a: 'טלפון: 03-5622587 | פקס: 03-6205906 | אתר: ebath.co.il',
+  },
+];
+
+const STATS = [
+  { value: '10,000+', label: 'מוצרים' },
+  { value: '20+', label: 'קטגוריות' },
+  { value: 'כל הארץ', label: 'משלוחים' },
+  { value: 'חינם', label: 'ייעוץ מקצועי' },
+];
+
+export default function CustomerHome() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showAllCats, setShowAllCats] = useState(false);
+
+  return (
+    <div className="space-y-0 -mx-4 -mt-8" dir="rtl">
+
+      {/* Hero */}
+      <section className="relative min-h-[520px] flex items-center overflow-hidden">
+        <img
+          src={HERO_IMAGE}
+          alt="חדר אמבטיה יוקרתי"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-l from-gray-900/85 via-gray-900/55 to-gray-900/20" />
+        <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 w-full">
+          <div className="max-w-xl">
+            <span className="inline-block bg-sky-500/20 border border-sky-400/30 text-sky-200 text-sm px-3 py-1 rounded-full mb-4 backdrop-blur-sm">
+              למעלה מ-10,000 מוצרים לחדרי אמבטיה ומטבח
+            </span>
+            <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
+              כל מה שצריך<br />
+              <span className="text-sky-400">לחדר האמבטיה</span><br />
+              שלך
+            </h1>
+            <p className="text-gray-200 text-lg leading-relaxed mb-8">
+              ארונות, מקלחונים, ברזים, ראשי גשם, אביזרים ועוד —
+              ייעוץ מקצועי ומשלוח לכל הארץ.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="https://www.ebath.co.il"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-sky-500/30 hover:-translate-y-0.5"
+              >
+                <span>לכל המוצרים</span>
+                <ArrowLeft size={18} />
+              </a>
+              <a
+                href="tel:03-5622587"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium px-6 py-3 rounded-xl transition-all backdrop-blur-sm"
+              >
+                <Phone size={16} />
+                <span>03-5622587</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats bar */}
+      <section className="bg-sky-600">
+        <div className="max-w-5xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {STATS.map((s) => (
+            <div key={s.label} className="text-center">
+              <p className="text-2xl font-bold text-white">{s.value}</p>
+              <p className="text-sky-200 text-sm">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Benefits */}
+      <section className="bg-white py-12 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {BENEFITS.map((b) => (
+              <div key={b.title} className="text-center group">
+                <div className="w-14 h-14 rounded-2xl bg-sky-50 group-hover:bg-sky-100 transition-colors flex items-center justify-center text-sky-600 mx-auto mb-3">
+                  {b.icon}
+                </div>
+                <p className="font-bold text-gray-800 text-sm">{b.title}</p>
+                <p className="text-gray-500 text-xs mt-1">{b.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Categories */}
+      <section className="bg-gray-50 py-14 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900">קטגוריות מוצרים</h2>
+            <p className="text-gray-500 mt-2">בחר את הקטגוריה ומצא את המוצר המושלם</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {CATEGORIES.map((cat) => (
+              <a
+                key={cat.name}
+                href={cat.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative rounded-2xl overflow-hidden aspect-[4/3] block"
+              >
+                <img
+                  src={cat.img}
+                  alt={cat.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent" />
+                <div className="absolute bottom-0 right-0 left-0 p-4">
+                  <p className="font-bold text-white text-base md:text-lg leading-tight">{cat.name}</p>
+                  <p className="text-gray-200 text-xs mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">{cat.desc}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          {/* All categories list */}
+          <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-gray-800">כל הקטגוריות — {ALL_CATEGORIES.length} קטגוריות</h3>
+              <button
+                onClick={() => setShowAllCats(!showAllCats)}
+                className="flex items-center gap-1 text-sm text-sky-600 hover:text-sky-700"
+              >
+                {showAllCats ? <><ChevronUp size={16} />הסתר</> : <><ChevronDown size={16} />הצג הכל</>}
+              </button>
+            </div>
+            <div className={`flex flex-wrap gap-2 ${!showAllCats ? 'max-h-16 overflow-hidden' : ''}`}>
+              {ALL_CATEGORIES.map((cat) => (
+                <a
+                  key={cat.name}
+                  href={cat.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 bg-gray-50 hover:bg-sky-50 border border-gray-200 hover:border-sky-300 text-gray-700 hover:text-sky-700 rounded-full text-sm transition-all"
+                >
+                  {cat.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <a
+              href="https://www.ebath.co.il"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border-2 border-sky-600 text-sky-600 hover:bg-sky-600 hover:text-white font-bold px-8 py-3 rounded-xl transition-all"
+            >
+              <span>לכל הקטגוריות</span>
+              <ExternalLink size={16} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews */}
+      <section className="bg-white py-14 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="flex justify-center gap-1 mb-2">
+              {[1,2,3,4,5].map(i => <Star key={i} size={20} className="text-amber-400 fill-amber-400" />)}
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900">לקוחות מספרים</h2>
+            <p className="text-gray-500 mt-2">אלפי לקוחות מרוצים בכל רחבי ישראל</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {REVIEWS.map((r, i) => (
+              <div key={i} className="bg-gray-50 border border-gray-200 rounded-2xl p-5">
+                <div className="flex gap-1 mb-3">
+                  {[1,2,3,4,5].map(s => <Star key={s} size={14} className="text-amber-400 fill-amber-400" />)}
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-3">"{r.text}"</p>
+                <p className="font-semibold text-gray-500 text-sm">{r.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="bg-gray-50 py-14 px-4">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900">שאלות נפוצות</h2>
+          </div>
+          <div className="space-y-2">
+            {FAQS.map((faq, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between gap-3 p-5 text-right hover:bg-gray-50 transition-colors"
+                >
+                  <span className="font-semibold text-gray-800">{faq.q}</span>
+                  {openFaq === i
+                    ? <ChevronUp size={18} className="text-sky-500 flex-shrink-0" />
+                    : <ChevronDown size={18} className="text-gray-400 flex-shrink-0" />
+                  }
+                </button>
+                {openFaq === i && (
+                  <div className="px-5 pb-5">
+                    <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact strip */}
+      <section className="bg-sky-50 border-y border-sky-100 py-10 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 flex-shrink-0">
+                <Phone size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">טלפון</p>
+                <a href="tel:03-5622587" className="font-bold text-gray-800 hover:text-sky-600 transition-colors">03-5622587</a>
+                <p className="text-xs text-gray-400">פקס: 03-6205906</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 flex-shrink-0">
+                <MapPin size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">כתובת מחסן ומשרד</p>
+                <p className="font-bold text-gray-800">המרכבה 19, א.ת. חולון</p>
+                <p className="text-xs text-gray-400">מול תחנת דלק</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 flex-shrink-0">
+                <Clock size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">שעות פתיחה</p>
+                <p className="font-bold text-gray-800">א'–ה' 9:00–17:00</p>
+                <p className="text-xs text-gray-400">ו' 9:00–13:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Banner */}
+      <section className="relative overflow-hidden bg-gray-900 py-16 px-4">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full bg-sky-400 blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full bg-sky-300 blur-3xl" />
+        </div>
+        <div className="relative max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-white mb-3">מוכן לשדרג את חדר האמבטיה?</h2>
+          <p className="text-gray-300 text-lg mb-8">10,000+ מוצרים, ייעוץ מקצועי, משלוח לכל הארץ</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <a
+              href="https://www.ebath.co.il"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-sky-500/30 hover:-translate-y-0.5 text-lg"
+            >
+              <span>לאתר eBath</span>
+              <ExternalLink size={18} />
+            </a>
+            <a
+              href="tel:03-5622587"
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium px-8 py-4 rounded-xl transition-all text-lg"
+            >
+              <Phone size={18} />
+              <span>03-5622587</span>
+            </a>
+          </div>
+          <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-gray-400">
+            <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-sky-400" /> משלוח לכל הארץ</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-sky-400" /> ייעוץ מקצועי</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-sky-400" /> המרכבה 19, חולון</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  );
+}
